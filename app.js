@@ -5,10 +5,10 @@ const Manager = require('./lib/Manager');
 const Intern = require('./lib/Intern');
 const Engineer = require('./lib/Engineer');
 
-const generateHTML = require('./template/generateHTML');
-const generateManager = require('./template/generateManager');
-const generateIntern = require('./template/generateIntern');
-const generateEngineer = require('./template/generateEngineer');
+const generateHTML = require('./templates/generateHTML');
+const generateManager = require('./templates/generateManager');
+const generateIntern = require('./templates/generateIntern');
+const generateEngineer = require('./templates/generateEngineer');
 
 function generateMemberHTML(members) {
     var HTML = '';
@@ -27,13 +27,14 @@ function generateMemberHTML(members) {
                 HTML += generateEngineer.generateHTML(engineer);
                 break;
         }
-    });
-};
+    }); 
+    return HTML;
+}
 
-inquirer.registerPrompt()
+inquirer.registerPrompt('recursive', require('inquirer-recursive'));
 
 inquirer.prompt([{
-    type: 'confirm',
+    type: 'recursive',
     message: 'Adding A New Team Member?',
     name: 'members',
     prompts: [
@@ -123,10 +124,10 @@ inquirer.prompt([{
     ],
 }]).then((team) => {
     let HTML = generateMemberHTML(team.members);
-    HTML = generateMemberHTML.generateHTML(HTML);
+    HTML = generateHTML.generateHTML(HTML);
     fs.writeFile('./output/team.html', HTML, (err) => {
-        if(err) {
-            return (err);
+        if (err) {
+            return console.log(err);
         }
         console.log('Success! File written to team.html in the output folder');
     });
